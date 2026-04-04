@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>مشغل الموسيقى</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; padding: 20px; background: #121212; color: white; }
+        .track { background: #282828; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
+        button { background: #1db954; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1ed760; }
+        .playing { background: #3b3b3b; border-right: 4px solid #1db954; }
+        audio { width: 100%; margin-top: 20px; }
+        #nowPlaying { margin: 20px 0; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <h1>🎵 مشغل الموسيقى</h1>
+    <div id="nowPlaying"></div>
+    <div id="playlist"></div>
+    <audio id="player" controls></audio>
+
+    <script>
+        let playlist = [];
+        
+        // تحميل قائمة التشغيل من الملف الخارجي
+        async function loadPlaylist() {
+            try {
+                const response = await fetch('playlist.json?t=' + Date.now()); // منع الكاش
+                playlist = await response.json();
+                displayPlaylist();
+            } catch(e) {
+                console.error('خطأ في تحميل القائمة:', e);
+                document.getElementById('playlist').innerHTML = '<p style="color:red">فشل تحميل قائمة الموسيقى</p>';
+            }
+        }
+        
+        function displayPlaylist() {
+            const container = document.getElementById('playlist');
+            container.innerHTML = '';
+            playlist.forEach((track, index) => {
+                const div = document.createElement('div');
+                div.className = 'track';
+                div.innerHTML = `
+                    <span style="flex:1"><strong>${track.title}</strong><br><small>${track.artist || 'فنان'}</small></span>
+                    <button onclick="playTrack(${index})">▶ تشغيل</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function playTrack(index) {
+            const track = playlist[index];
+            const player = document.getElementById('player');
+            player.src = track.url;
+            player.play();
+            document.getElementById('nowPlaying').innerHTML = `🎧 الآن يشغل: ${track.title}`;
+            
+            // إضافة تأثير للمسار المشغل
+            document.querySelectorAll('.track').forEach((el, i) => {
+                if(i === index) el.classList.add('playing');
+                else el.classList.remove('playing');
+            });
+        }
+        
+        loadPlaylist();
+        // تحديث تلقائي كل 5 دقائق (اختياري)
+        setInterval(loadPlaylist, 300000);
+    </script>
+</body>
+</html>
