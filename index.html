@@ -1,71 +1,493 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-    <title>مشغل الموسيقى</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>۩ قـࢪءان كـࢪيـم ۩</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #121212; color: white; }
-        .track { background: #282828; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
-        button { background: #1db954; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #1ed760; }
-        .playing { background: #3b3b3b; border-right: 4px solid #1db954; }
-        audio { width: 100%; margin-top: 20px; }
-        #nowPlaying { margin: 20px 0; font-size: 1.2em; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+            font-family: 'Segoe UI', 'Arial', system-ui;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* الخلفية المنقطة بالهولوجرام */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><path fill="none" stroke="rgba(0,255,0,0.2)" stroke-width="0.8" d="M30 30 L170 30 M30 70 L170 70 M30 110 L170 110 M30 150 L170 150 M70 30 L70 170 M110 30 L110 170 M150 30 L150 170"/><circle cx="40" cy="40" r="8" fill="rgba(0,255,0,0.3)"/><rect x="80" y="80" width="20" height="25" fill="rgba(0,255,0,0.2)"/><path d="M130 130 L140 120 L150 130 L140 140 Z" fill="rgba(0,255,0,0.2)"/><path d="M160 50 L170 55 L160 60" fill="none" stroke="rgba(0,255,0,0.2)" stroke-width="1.5"/></svg>');
+            background-repeat: repeat;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        /* رأس الموقع */
+        .hero {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 2px solid rgba(0,255,0,0.3);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .glow-title {
+            font-size: 3.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+            animation: pulseGreen 1.2s infinite alternate;
+            display: inline-block;
+            background: linear-gradient(135deg, #aaffaa, #00aa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        @keyframes pulseGreen {
+            0% { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+            100% { text-shadow: 0 0 20px #0f0, 0 0 40px #0f0, 0 0 60px #0f0; }
+        }
+
+        .kaaba-icon {
+            display: inline-block;
+            font-size: 3rem;
+            margin-right: 15px;
+            animation: shake 0.3s infinite alternate, hologlow 1.5s infinite alternate;
+            filter: drop-shadow(0 0 8px gold);
+        }
+
+        @keyframes shake {
+            from { transform: translateY(0px) rotate(0deg); }
+            to { transform: translateY(-5px) rotate(2deg); }
+        }
+
+        @keyframes hologlow {
+            0% { filter: drop-shadow(0 0 2px cyan) hue-rotate(0deg); }
+            100% { filter: drop-shadow(0 0 15px magenta) hue-rotate(360deg); }
+        }
+
+        /* الماسح الضوئي الوردي */
+        .scanner {
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff66cc, #ff1493, #ff66cc, transparent);
+            margin: 20px auto;
+            border-radius: 4px;
+            position: relative;
+            animation: scanMove 2.5s ease-in-out infinite;
+            box-shadow: 0 0 20px #ff66cc;
+        }
+
+        @keyframes scanMove {
+            0% { width: 20%; opacity: 0.3; transform: translateY(0px); }
+            50% { width: 90%; opacity: 1; transform: translateY(15px); }
+            100% { width: 20%; opacity: 0.3; transform: translateY(0px); }
+        }
+
+        /* قائمة الفنانين */
+        .artists-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .artist-btn {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #0f0;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #cfc;
+            cursor: pointer;
+            transition: 0.2s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 8px #0f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .artist-btn:hover {
+            transform: scale(1.05);
+            background: #0f0f0f;
+            box-shadow: 0 0 20px #0f0;
+            text-shadow: 0 0 5px white;
+        }
+
+        .artist-btn::before {
+            content: "🕋✨";
+            font-size: 1.2rem;
+            animation: hologlow 1s infinite;
+        }
+
+        /* قائمة الأغاني */
+        .songs-container {
+            background: rgba(0,0,0,0.6);
+            border-radius: 28px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(0,255,0,0.3);
+        }
+
+        .song-item {
+            background: #111;
+            margin: 12px 0;
+            padding: 14px 18px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+            border-right: 3px solid #0f0;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .song-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .song-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd966;
+        }
+
+        .play-btn {
+            background: linear-gradient(145deg, #1e6f3f, #0a3b1f);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 8px cyan;
+        }
+
+        .play-btn.playing-now {
+            background: radial-gradient(circle, #ff44cc, #aa22aa);
+            animation: rainbowGlow 0.8s infinite alternate;
+            box-shadow: 0 0 20px magenta;
+        }
+
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 5px red; text-shadow: 0 0 2px yellow;}
+            100% { box-shadow: 0 0 20px blue; text-shadow: 0 0 8px cyan;}
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 50px;
+            background: #222;
+        }
+
+        /* footer hacker style */
+        .footer {
+            margin-top: 60px;
+            padding: 20px;
+            text-align: center;
+            font-family: monospace;
+            border-top: 1px dashed #0f0;
+            background: #030303aa;
+            border-radius: 40px;
+            animation: footerGlitch 0.8s infinite;
+        }
+
+        @keyframes footerGlitch {
+            0% { text-shadow: -1px 0 red, 1px 0 blue; opacity: 0.9; }
+            50% { text-shadow: 2px 0 cyan, -2px 0 magenta; opacity: 1; }
+            100% { text-shadow: -1px 0 lime, 1px 0 yellow; opacity: 0.9; }
+        }
+
+        .glitch-text {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            word-break: keep-all;
+            display: inline-block;
+            animation: colorCycle 2s infinite;
+        }
+
+        @keyframes colorCycle {
+            0% { color: #0f0; }
+            25% { color: #ff0; }
+            50% { color: #f0f; }
+            75% { color: #0ff; }
+            100% { color: #f66; }
+        }
+
+        h2.section-artist {
+            text-align: center;
+            font-size: 2rem;
+            margin: 20px 0;
+            text-shadow: 0 0 15px #00aaff;
+            color: #88ddff;
+            animation: pulseBlue 1s infinite alternate;
+        }
+
+        @keyframes pulseBlue {
+            from { text-shadow: 0 0 5px #0af; }
+            to { text-shadow: 0 0 25px #0af, 0 0 35px #0af; }
+        }
+
+        .back-btn {
+            background: #222;
+            border: 1px solid #0f0;
+            padding: 6px 15px;
+            border-radius: 30px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .loader {
+            text-align: center;
+            color: lime;
+        }
     </style>
 </head>
 <body>
-    <h1>🎵 مشغل الموسيقى</h1>
-    <div id="nowPlaying"></div>
-    <div id="playlist"></div>
-    <audio id="player" controls></audio>
 
-    <script>
-        let playlist = [];
+<div class="hero">
+    <span class="kaaba-icon">🕋✨</span>
+    <span class="glow-title">۩ قـࢪءان كـࢪيـم ۩</span>
+    <span class="kaaba-icon">✨🕋</span>
+    <div class="scanner"></div>
+</div>
+
+<!-- منطقة عرض الفنانين أو الأغاني -->
+<div id="mainContent">
+    <div id="artistsArea"></div>
+    <div id="songsArea"></div>
+</div>
+
+<audio id="globalAudio" controls style="display:none;"></audio>
+<div id="audioVisualizer" style="margin-top: 10px; text-align:center;"></div>
+
+<footer class="footer">
+    <div class="glitch-text">
+        ❀ جـميع الحقوق محفوظـه لـدى ءالـمبرمج 𝑾𝑯𝑰𝑺𝑲𝒀 𝑬𝑳𝒀𝑶𝑼𝑻𝑼𝑩𝑬𝑹 ❀ || 𝑺_𝑨𝒀𝑶𝑼𝑫𝑨
+    </div>
+</footer>
+
+<script>
+    let playlistData = [];
+    let currentArtist = null;
+    let currentlyPlayingSong = null;
+    const audioPlayer = document.getElementById('globalAudio');
+
+    // تحميل بيانات JSON من ملف playlist.json
+    async function loadPlaylist() {
+        try {
+            const response = await fetch('playlist.json?t=' + Date.now());
+            if (!response.ok) throw new Error('الملف غير موجود');
+            playlistData = await response.json();
+            renderArtistsList();
+        } catch (err) {
+            document.getElementById('artistsArea').innerHTML = '<div class="loader">⚠️ فشل تحميل playlist.json , تأكد من وجود الملف بالشكل الصحيح</div>';
+            console.error(err);
+        }
+    }
+
+    // استخراج قائمة الفنانين الفريدة من البيانات
+    function getUniqueArtists() {
+        const artists = playlistData.map(item => item.artist).filter(Boolean);
+        return [...new Set(artists)];
+    }
+
+    // عرض أزرار الفنانين
+    function renderArtistsList() {
+        const artists = getUniqueArtists();
+        const container = document.getElementById('artistsArea');
+        if (!artists.length) {
+            container.innerHTML = '<div class="loader">✘ لا يوجد قـࢪآن دلـوقت  ضـيف بعـض الـبيانات هـنا يحـب playlist.json ✘</div>';
+            return;
+        }
+
+        let html = '<div class="artists-grid">';
+        artists.forEach(artist => {
+            html += `<button class="artist-btn" data-artist="${escapeHtml(artist)}">❀ ${escapeHtml(artist)}</button>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+
+        // إضافة أحداث النقر لكل فنان
+        document.querySelectorAll('.artist-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const artistName = btn.getAttribute('data-artist');
+                showSongsByArtist(artistName);
+            });
+        });
+    }
+
+    // عرض الأغاني لفنان معين
+    function showSongsByArtist(artistName) {
+        currentArtist = artistName;
+        const filteredSongs = playlistData.filter(item => item.artist === artistName);
+        const songsContainer = document.getElementById('songsArea');
         
-        // تحميل قائمة التشغيل من الملف الخارجي
-        async function loadPlaylist() {
-            try {
-                const response = await fetch('playlist.json?t=' + Date.now()); // منع الكاش
-                playlist = await response.json();
-                displayPlaylist();
-            } catch(e) {
-                console.error('خطأ في تحميل القائمة:', e);
-                document.getElementById('playlist').innerHTML = '<p style="color:red">فشل تحميل قائمة الموسيقى</p>';
+        let songsHtml = `<div><button id="backToArtistsBtn" class="back-btn">🔙 العودة لقائمة الفنانين</button></div>`;
+        songsHtml += `<h2 class="section-artist">✦ ${escapeHtml(artistName)} ✦</h2>`;
+        songsHtml += `<div class="songs-container">`;
+        
+        filteredSongs.forEach((song, idx) => {
+            const uniqueId = `song_${Date.now()}_${idx}`;
+            const isPlayingNow = (currentlyPlayingSong === song.url);
+            songsHtml += `
+                <div class="song-item" data-url="${escapeHtml(song.url)}">
+                    <div class="song-info">
+                        <span class="song-title">✧ ${escapeHtml(song.title)}</span>
+                        <small style="color:#aaa;">❥ ${escapeHtml(song.artist)}</small>
+                    </div>
+                    <button class="play-btn ${isPlayingNow ? 'playing-now' : ''}" data-url="${escapeHtml(song.url)}" data-title="${escapeHtml(song.title)}" data-artist="${escapeHtml(song.artist)}">
+                        ${isPlayingNow ? '⏵ تشغيل الآن' : '▶ تشغيل'}
+                    </button>
+                </div>
+            `;
+        });
+        
+        songsHtml += `</div>`;
+        songsContainer.innerHTML = songsHtml;
+        
+        // إعادة ربط الأزرار
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const url = btn.getAttribute('data-url');
+                const title = btn.getAttribute('data-title');
+                const artist = btn.getAttribute('data-artist');
+                playSong(url, title, artist, btn);
+            });
+        });
+        
+        const backBtn = document.getElementById('backToArtistsBtn');
+        if(backBtn) backBtn.onclick = () => {
+            currentArtist = null;
+            document.getElementById('songsArea').innerHTML = '';
+            renderArtistsList(); // إعادة عرض قائمة الفنانين فقط
+        };
+    }
+
+    // تشغيل الأغنية مع تأثيرات
+    function playSong(url, title, artist, buttonElement) {
+        if (!url) return;
+        
+        // إظهار مشغل الصوت
+        audioPlayer.style.display = 'block';
+        audioPlayer.src = url;
+        audioPlayer.play().catch(e => console.warn('مشكلة بالتشغيل:', e));
+        
+        // إزالة تأثير التشغيل من كل الأزرار
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.classList.remove('playing-now');
+            btn.innerHTML = '▶ تشغيل';
+        });
+        
+        buttonElement.classList.add('playing-now');
+        buttonElement.innerHTML = '🎵 ✦ شـغـال دلـوقـت ✦ 🎵';
+        currentlyPlayingSong = url;
+        
+        // تأثيرات بصرية على حاوية الأغنية
+        const parentDiv = buttonElement.closest('.song-item');
+        if(parentDiv) {
+            parentDiv.style.transition = '0.2s';
+            parentDiv.style.boxShadow = '0 0 18px magenta';
+            setTimeout(() => {
+                if(parentDiv) parentDiv.style.boxShadow = '';
+            }, 500);
+        }
+        
+        // إظهار متحكمات التألق في الأسفل
+        const vizDiv = document.getElementById('audioVisualizer');
+        vizDiv.innerHTML = `<div style="background:linear-gradient(90deg,red,orange,yellow,green,blue,indigo,violet); padding:4px; border-radius:20px; animation: rainbowGlow 0.5s infinite;">🎶 الآن يتم تشغيل: ${title} - ${artist} 🎶</div>`;
+        
+        // عند انتهاء الصوت إعادة تعيين الزر
+        audioPlayer.onended = () => {
+            if(buttonElement) {
+                buttonElement.classList.remove('playing-now');
+                buttonElement.innerHTML = '▶ تشغيل';
             }
-        }
-        
-        function displayPlaylist() {
-            const container = document.getElementById('playlist');
-            container.innerHTML = '';
-            playlist.forEach((track, index) => {
-                const div = document.createElement('div');
-                div.className = 'track';
-                div.innerHTML = `
-                    <span style="flex:1"><strong>${track.title}</strong><br><small>${track.artist || 'فنان'}</small></span>
-                    <button onclick="playTrack(${index})">▶ تشغيل</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-        
-        function playTrack(index) {
-            const track = playlist[index];
-            const player = document.getElementById('player');
-            player.src = track.url;
-            player.play();
-            document.getElementById('nowPlaying').innerHTML = `🎧 الآن يشغل: ${track.title}`;
-            
-            // إضافة تأثير للمسار المشغل
-            document.querySelectorAll('.track').forEach((el, i) => {
-                if(i === index) el.classList.add('playing');
-                else el.classList.remove('playing');
-            });
-        }
-        
+            currentlyPlayingSong = null;
+            vizDiv.innerHTML = '';
+        };
+    }
+    
+    // دالة لتجنب XSS
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // إعادة تحميل JSON كل 10 ثواني لمراقبة التحديثات (تحديث playlist.json في أي وقت)
+    let intervalReload;
+    function startAutoReload() {
+        if(intervalReload) clearInterval(intervalReload);
+        intervalReload = setInterval(async () => {
+            try {
+                const response = await fetch('playlist.json?t=' + Date.now());
+                const newData = await response.json();
+                // مقارنة سريعة (يمكن مقارنة الطول أو المحتوى)
+                if(JSON.stringify(playlistData) !== JSON.stringify(newData)) {
+                    playlistData = newData;
+                    // إذا كنا في وضع فنان معين، نعيد عرض الأغاني بدون فقدان السياق إن أمكن
+                    if(currentArtist) {
+                        const artistExists = playlistData.some(item => item.artist === currentArtist);
+                        if(artistExists) {
+                            showSongsByArtist(currentArtist);
+                        } else {
+                            // الفنان الحالي لم يعد موجوداً ننتقل للفنانين
+                            currentArtist = null;
+                            document.getElementById('songsArea').innerHTML = '';
+                            renderArtistsList();
+                        }
+                    } else {
+                        renderArtistsList();
+                    }
+                    // إذا لم تكن هناك أغاني محددة حاليًا نظف المنطقة
+                    if(!currentArtist) document.getElementById('songsArea').innerHTML = '';
+                }
+            } catch(e) { console.warn('تحديث تلقائي فشل', e); }
+        }, 10000); // كل 10 ثواني
+    }
+
+    // تهيئة الموقع
+    function init() {
         loadPlaylist();
-        // تحديث تلقائي كل 5 دقائق (اختياري)
-        setInterval(loadPlaylist, 300000);
-    </script>
+        startAutoReload();
+        // خلفية موسيقى سابقة
+        audioPlayer.style.display = 'none';
+    }
+    
+    init();
+</script>
 </body>
 </html>
