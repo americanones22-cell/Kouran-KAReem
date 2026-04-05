@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>۩ قـࢪءان كـࢪيـم ۩</title>
     <style>
         * {
@@ -17,8 +17,15 @@
             font-family: 'Segoe UI', 'Arial', system-ui;
             color: white;
             min-height: 100vh;
-            padding: 20px;
+            padding: 12px;
             position: relative;
+        }
+
+        /* تحسين المسافات للهواتف */
+        @media (min-width: 640px) {
+            body {
+                padding: 20px;
+            }
         }
 
         /* الخلفية المنقطة بالهولوجرام */
@@ -36,17 +43,24 @@
             z-index: -1;
         }
 
-        /* رأس الموقع */
+        /* رأس الموقع - متجاوب */
         .hero {
             text-align: center;
-            padding: 30px 20px;
+            padding: 15px 10px 20px 10px;
             border-bottom: 2px solid rgba(0,255,0,0.3);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             position: relative;
         }
 
+        @media (min-width: 640px) {
+            .hero {
+                padding: 30px 20px;
+                margin-bottom: 30px;
+            }
+        }
+
         .glow-title {
-            font-size: 3.2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
             animation: pulseGreen 1.2s infinite alternate;
@@ -57,6 +71,18 @@
             color: transparent;
         }
 
+        @media (min-width: 640px) {
+            .glow-title {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .glow-title {
+                font-size: 3.2rem;
+            }
+        }
+
         @keyframes pulseGreen {
             0% { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
             100% { text-shadow: 0 0 20px #0f0, 0 0 40px #0f0, 0 0 60px #0f0; }
@@ -64,10 +90,23 @@
 
         .kaaba-icon {
             display: inline-block;
-            font-size: 3rem;
-            margin-right: 15px;
+            font-size: 1.8rem;
+            margin-right: 8px;
             animation: shake 0.3s infinite alternate, hologlow 1.5s infinite alternate;
             filter: drop-shadow(0 0 8px gold);
+        }
+
+        @media (min-width: 640px) {
+            .kaaba-icon {
+                font-size: 2.5rem;
+                margin-right: 15px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .kaaba-icon {
+                font-size: 3rem;
+            }
         }
 
         @keyframes shake {
@@ -80,16 +119,22 @@
             100% { filter: drop-shadow(0 0 15px magenta) hue-rotate(360deg); }
         }
 
-        /* الماسح الضوئي الوردي */
+        /* الماسح الضوئي الوردي - متجاوب */
         .scanner {
             width: 80%;
             height: 4px;
             background: linear-gradient(90deg, transparent, #ff66cc, #ff1493, #ff66cc, transparent);
-            margin: 20px auto;
+            margin: 15px auto;
             border-radius: 4px;
             position: relative;
             animation: scanMove 2.5s ease-in-out infinite;
             box-shadow: 0 0 20px #ff66cc;
+        }
+
+        @media (min-width: 640px) {
+            .scanner {
+                margin: 20px auto;
+            }
         }
 
         @keyframes scanMove {
@@ -98,21 +143,28 @@
             100% { width: 20%; opacity: 0.3; transform: translateY(0px); }
         }
 
-        /* قائمة الفنانين */
+        /* قائمة الفنانين - شبكة مرنة */
         .artists-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 18px;
+            gap: 12px;
             justify-content: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 640px) {
+            .artists-grid {
+                gap: 18px;
+                margin-bottom: 40px;
+            }
         }
 
         .artist-btn {
             background: rgba(0,0,0,0.7);
             border: 1px solid #0f0;
-            padding: 12px 24px;
+            padding: 8px 16px;
             border-radius: 60px;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: #cfc;
             cursor: pointer;
@@ -121,7 +173,16 @@
             box-shadow: 0 0 8px #0f0;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 640px) {
+            .artist-btn {
+                padding: 12px 24px;
+                font-size: 1.2rem;
+                gap: 12px;
+            }
         }
 
         .artist-btn:hover {
@@ -133,30 +194,55 @@
 
         .artist-btn::before {
             content: "🕋✨";
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             animation: hologlow 1s infinite;
         }
 
-        /* قائمة الأغاني */
+        @media (min-width: 640px) {
+            .artist-btn::before {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* قائمة الأغاني - متجاوبة بالكامل */
         .songs-container {
             background: rgba(0,0,0,0.6);
-            border-radius: 28px;
-            padding: 20px;
-            margin: 20px 0;
+            border-radius: 24px;
+            padding: 12px;
+            margin: 15px 0;
             border: 1px solid rgba(0,255,0,0.3);
+        }
+
+        @media (min-width: 640px) {
+            .songs-container {
+                border-radius: 28px;
+                padding: 20px;
+                margin: 20px 0;
+            }
         }
 
         .song-item {
             background: #111;
-            margin: 12px 0;
-            padding: 14px 18px;
-            border-radius: 20px;
+            margin: 10px 0;
+            padding: 12px 12px;
+            border-radius: 18px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             transition: 0.2s;
             border-right: 3px solid #0f0;
             animation: fadeInUp 0.3s ease;
+            gap: 10px;
+        }
+
+        @media (min-width: 480px) {
+            .song-item {
+                padding: 14px 18px;
+                margin: 12px 0;
+                border-radius: 20px;
+                flex-wrap: nowrap;
+            }
         }
 
         @keyframes fadeInUp {
@@ -167,24 +253,43 @@
         .song-info {
             display: flex;
             flex-direction: column;
+            flex: 2;
+            min-width: 120px;
         }
 
         .song-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #ffd966;
+            word-break: break-word;
+        }
+
+        @media (min-width: 640px) {
+            .song-title {
+                font-size: 1.2rem;
+            }
         }
 
         .play-btn {
             background: linear-gradient(145deg, #1e6f3f, #0a3b1f);
             border: none;
-            padding: 8px 20px;
+            padding: 6px 14px;
             border-radius: 40px;
             color: white;
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
             box-shadow: 0 0 8px cyan;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 640px) {
+            .play-btn {
+                padding: 8px 20px;
+                font-size: 1rem;
+            }
         }
 
         .play-btn.playing-now {
@@ -205,16 +310,23 @@
             background: #222;
         }
 
-        /* footer hacker style */
+        /* footer hacker style - متجاوب */
         .footer {
-            margin-top: 60px;
-            padding: 20px;
+            margin-top: 40px;
+            padding: 15px;
             text-align: center;
             font-family: monospace;
             border-top: 1px dashed #0f0;
             background: #030303aa;
             border-radius: 40px;
             animation: footerGlitch 0.8s infinite;
+        }
+
+        @media (min-width: 640px) {
+            .footer {
+                margin-top: 60px;
+                padding: 20px;
+            }
         }
 
         @keyframes footerGlitch {
@@ -224,11 +336,18 @@
         }
 
         .glitch-text {
-            font-size: 1rem;
-            letter-spacing: 2px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
             word-break: keep-all;
             display: inline-block;
             animation: colorCycle 2s infinite;
+        }
+
+        @media (min-width: 640px) {
+            .glitch-text {
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
         }
 
         @keyframes colorCycle {
@@ -241,11 +360,20 @@
 
         h2.section-artist {
             text-align: center;
-            font-size: 2rem;
-            margin: 20px 0;
+            font-size: 1.5rem;
+            margin: 15px 0;
             text-shadow: 0 0 15px #00aaff;
             color: #88ddff;
             animation: pulseBlue 1s infinite alternate;
+            word-break: break-word;
+            padding: 0 10px;
+        }
+
+        @media (min-width: 640px) {
+            h2.section-artist {
+                font-size: 2rem;
+                margin: 20px 0;
+            }
         }
 
         @keyframes pulseBlue {
@@ -256,16 +384,70 @@
         .back-btn {
             background: #222;
             border: 1px solid #0f0;
-            padding: 6px 15px;
+            padding: 5px 12px;
             border-radius: 30px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             cursor: pointer;
             display: inline-block;
+            font-size: 0.85rem;
+        }
+
+        @media (min-width: 640px) {
+            .back-btn {
+                padding: 6px 15px;
+                margin-bottom: 15px;
+                font-size: 1rem;
+            }
         }
 
         .loader {
             text-align: center;
             color: lime;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 640px) {
+            .loader {
+                font-size: 1rem;
+            }
+        }
+
+        /* تحسين عرض الأغنية الصغير */
+        #audioVisualizer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        @media (min-width: 640px) {
+            #audioVisualizer {
+                font-size: 1rem;
+            }
+        }
+
+        /* منع overflow في الشاشات الصغيرة جداً */
+        .song-item .song-info small {
+            font-size: 0.7rem;
+            word-break: break-word;
+        }
+
+        @media (min-width: 640px) {
+            .song-item .song-info small {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* تحسين ظهور audio player */
+        #globalAudio {
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* ضبط المسافات الرئيسية */
+        #mainContent {
+            width: 100%;
+            overflow-x: hidden;
         }
     </style>
 </head>
@@ -289,7 +471,7 @@
 
 <footer class="footer">
     <div class="glitch-text">
-        ❀ جـميع الحقوق محفوظـه لـدى ءالـمبرمج 𝑾𝑯𝑰𝑺𝑲𝒀 𝑬𝑳𝒀𝑶𝑼𝑻𝑼𝑩𝑬𝑹 ❀ || 𝑺_𝑨𝒀𝑶𝑼𝑫𝑨
+        ❀ جـميع الحقوق محفوظـه لـدى ءالـمبرمج 𝑾𝑯𝑰𝑺𝑲𝒀 𝑬𝑳𝒀𝑶𝑼𝑻𝑼𝑩𝑬𝑹 ❀ || 𝑺_𝑨𝒀𝑶𝑼𝑫𝑎
     </div>
 </footer>
 
@@ -349,7 +531,7 @@
         const filteredSongs = playlistData.filter(item => item.artist === artistName);
         const songsContainer = document.getElementById('songsArea');
         
-        let songsHtml = `<div><button id="backToArtistsBtn" class="back-btn">🔙 العودة لقائمة الفنانين</button></div>`;
+        let songsHtml = `<div><button id="backToArtistsBtn" class="back-btn">🔙 العودة لقائمة القارئين</button></div>`;
         songsHtml += `<h2 class="section-artist">✦ ${escapeHtml(artistName)} ✦</h2>`;
         songsHtml += `<div class="songs-container">`;
         
@@ -406,7 +588,7 @@
         });
         
         buttonElement.classList.add('playing-now');
-        buttonElement.innerHTML = '🎵 ✦ شـغـال دلـوقـت ✦ 🎵';
+        buttonElement.innerHTML = '🎵 ✦ شـغـالـه دلـوقـت ✦ 🎵';
         currentlyPlayingSong = url;
         
         // تأثيرات بصرية على حاوية الأغنية
